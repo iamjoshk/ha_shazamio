@@ -9,10 +9,33 @@ A comprehensive Home Assistant custom integration that provides a complete wrapp
 - **HACS Compatible**: Easy installation through HACS (Home Assistant Community Store)
 - **Event-Based Responses**: Results are published as Home Assistant events for flexible automation
 - **Up-to-Date**: Always uses the latest release of ShazamIO (v0.8.1+)
+- **Add-on Architecture**: Runs ShazamIO in a separate container with full Rust support for optimal performance
+
+## Architecture
+
+This integration uses a two-part architecture:
+1. **ShazamIO Add-on**: Runs in a separate Docker container with Rust compiler support, providing a FastAPI REST service
+2. **ShazamIO Integration**: Lightweight integration that communicates with the add-on and exposes services to Home Assistant
+
+This architecture ensures compatibility with ShazamIO's Rust-based audio fingerprinting while maintaining a clean integration.
 
 ## Installation
 
-### Via HACS (Recommended)
+**Important**: You must install both the add-on AND the integration for this to work.
+
+### Step 1: Install the ShazamIO Add-on
+
+1. Go to Settings → Add-ons → Add-on Store
+2. Click the three dots in the top right → Repositories
+3. Add `https://github.com/iamjoshk/ha_shazamio` as a repository
+4. Find "ShazamIO Service" in the add-on store
+5. Click "Install"
+6. Once installed, click "Start"
+7. Enable "Start on boot" if desired
+
+### Step 2: Install the ShazamIO Integration
+
+#### Via HACS (Recommended)
 
 1. Open HACS in your Home Assistant instance
 2. Click on "Integrations"
@@ -24,7 +47,7 @@ A comprehensive Home Assistant custom integration that provides a complete wrapp
 8. Go to Settings → Devices & Services → Add Integration
 9. Search for "ShazamIO" and add it
 
-### Manual Installation
+#### Manual Installation
 
 1. Copy the `custom_components/ha_shazamio` folder to your Home Assistant `custom_components` directory
 2. Restart Home Assistant

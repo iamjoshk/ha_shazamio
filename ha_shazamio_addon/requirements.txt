@@ -1,0 +1,5 @@
+aiohttp==3.10.10
+shazamio>=0.8.0
+uvicorn==0.32.1
+fastapi==0.115.5
+pydantic==2.10.3
