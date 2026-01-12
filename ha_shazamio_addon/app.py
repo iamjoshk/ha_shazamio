@@ -9,12 +9,32 @@ from pydantic import BaseModel
 from shazamio import Shazam, GenreMusic
 from shazamio.schemas.artists import ArtistQuery
 from shazamio.schemas.enums import ArtistView, ArtistExtend
+from dataclass_factory import Factory
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="ShazamIO Service", version="1.0.0")
+
+# Dataclass factory for serialization
+factory = Factory()
+
+
+def serialize_response(obj: Any) -> Dict[str, Any]:
+    """Convert ShazamIO response objects to dictionaries."""
+    try:
+        if hasattr(obj, '__dict__'):
+            # It's a dataclass or similar object
+            return factory.dump(obj, Dict[str, Any])
+        elif isinstance(obj, dict):
+            return obj
+        else:
+            # Try to convert to dict
+            return dict(obj)
+    except Exception as e:
+        logger.warning(f"Could not serialize response: {e}, returning as-is")
+        return {"raw_response": str(obj)}
 
 
 # Request models
@@ -143,7 +163,7 @@ async def recognize(request: RecognizeRequest) -> Dict[str, Any]:
         else:
             raise HTTPException(status_code=400, detail="Either audio_data or audio_path must be provided")
         
-        return result
+        return serialize_response(result)
     except Exception as e:
         logger.error(f"Error in recognize: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -162,7 +182,7 @@ async def artist_about(request: ArtistAboutRequest) -> Dict[str, Any]:
             query = ArtistQuery(views=views, extend=extend)
         
         result = await shazam.artist_about(request.artist_id, query=query)
-        return result
+        return serialize_response(result)
     except Exception as e:
         logger.error(f"Error in artist_about: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -174,7 +194,7 @@ async def track_about(request: TrackAboutRequest) -> Dict[str, Any]:
     try:
         shazam = Shazam(language=request.language, endpoint_country=request.endpoint_country)
         result = await shazam.track_about(track_id=request.track_id)
-        return result
+        return serialize_response(result)
     except Exception as e:
         logger.error(f"Error in track_about: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -190,7 +210,7 @@ async def search_artist(request: SearchRequest) -> Dict[str, Any]:
             limit=request.limit,
             offset=request.offset
         )
-        return result
+        return serialize_response(result)
     except Exception as e:
         logger.error(f"Error in search_artist: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -206,7 +226,7 @@ async def search_track(request: SearchRequest) -> Dict[str, Any]:
             limit=request.limit,
             offset=request.offset
         )
-        return result
+        return serialize_response(result)
     except Exception as e:
         logger.error(f"Error in search_track: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -222,7 +242,7 @@ async def related_tracks(request: RelatedTracksRequest) -> Dict[str, Any]:
             limit=request.limit,
             offset=request.offset
         )
-        return result
+        return serialize_response(result)
     except Exception as e:
         logger.error(f"Error in related_tracks: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -234,7 +254,7 @@ async def top_world_tracks(request: TracksRequest) -> Dict[str, Any]:
     try:
         shazam = Shazam(language=request.language, endpoint_country=request.endpoint_country)
         result = await shazam.top_world_tracks(limit=request.limit, offset=request.offset)
-        return result
+        return serialize_response(result)
     except Exception as e:
         logger.error(f"Error in top_world_tracks: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -250,7 +270,7 @@ async def top_country_tracks(request: CountryTracksRequest) -> Dict[str, Any]:
             limit=request.limit,
             offset=request.offset
         )
-        return result
+        return serialize_response(result)
     except Exception as e:
         logger.error(f"Error in top_country_tracks: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -267,7 +287,7 @@ async def top_city_tracks(request: CityTracksRequest) -> Dict[str, Any]:
             limit=request.limit,
             offset=request.offset
         )
-        return result
+        return serialize_response(result)
     except Exception as e:
         logger.error(f"Error in top_city_tracks: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -284,7 +304,7 @@ async def top_world_genre_tracks(request: GenreTracksRequest) -> Dict[str, Any]:
             limit=request.limit,
             offset=request.offset
         )
-        return result
+        return serialize_response(result)
     except Exception as e:
         logger.error(f"Error in top_world_genre_tracks: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -302,7 +322,7 @@ async def top_country_genre_tracks(request: CountryGenreTracksRequest) -> Dict[s
             limit=request.limit,
             offset=request.offset
         )
-        return result
+        return serialize_response(result)
     except Exception as e:
         logger.error(f"Error in top_country_genre_tracks: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -318,7 +338,7 @@ async def artist_albums(request: AlbumsRequest) -> Dict[str, Any]:
             limit=request.limit,
             offset=request.offset
         )
-        return result
+        return serialize_response(result)
     except Exception as e:
         logger.error(f"Error in artist_albums: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -330,7 +350,7 @@ async def search_album(request: AlbumRequest) -> Dict[str, Any]:
     try:
         shazam = Shazam(language=request.language, endpoint_country=request.endpoint_country)
         result = await shazam.search_album(album_id=request.album_id)
-        return result
+        return serialize_response(result)
     except Exception as e:
         logger.error(f"Error in search_album: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -342,7 +362,7 @@ async def listening_counter(request: ListeningCounterRequest) -> Dict[str, Any]:
     try:
         shazam = Shazam(language=request.language, endpoint_country=request.endpoint_country)
         result = await shazam.listening_counter(track_id=request.track_id)
-        return result
+        return serialize_response(result)
     except Exception as e:
         logger.error(f"Error in listening_counter: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -354,7 +374,7 @@ async def listening_counter_many(request: ListeningCounterManyRequest) -> List[D
     try:
         shazam = Shazam(language=request.language, endpoint_country=request.endpoint_country)
         result = await shazam.listening_counter_many(track_ids=request.track_ids)
-        return result
+        return serialize_response(result)
     except Exception as e:
         logger.error(f"Error in listening_counter_many: {e}")
         raise HTTPException(status_code=500, detail=str(e))
