@@ -1,7 +1,7 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
-# Install build dependencies including Rust
+# Install build dependencies including Rust and ALSA
 RUN apk add --no-cache \
     python3 \
     py3-pip \
@@ -13,7 +13,8 @@ RUN apk add --no-cache \
     openssl-dev \
     cargo \
     rust \
-    git
+    git \
+    alsa-lib-dev
 
 # Set working directory
 WORKDIR /app
