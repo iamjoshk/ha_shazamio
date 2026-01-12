@@ -20,6 +20,17 @@ app = FastAPI(title="ShazamIO Service", version="1.0.0")
 # Dataclass factory for serialization
 factory = Factory()
 
+# Apply workaround for ShazamIO issue #145
+# Fix broken search endpoints by patching the URL
+try:
+    from shazamio.misc import ShazamUrl
+    # Use Apple Music API endpoint instead of broken search endpoint
+    ShazamUrl.SEARCH_MUSIC = "https://www.shazam.com/services/amapi/v1/catalog/{endpoint_country}/search?types=songs&term={query}&limit={limit}&offset={offset}"
+    ShazamUrl.SEARCH_ARTIST = "https://www.shazam.com/services/amapi/v1/catalog/{endpoint_country}/search?types=artists&term={query}&limit={limit}&offset={offset}"
+    logger.info("Applied ShazamIO search endpoint workaround")
+except Exception as e:
+    logger.warning(f"Could not apply ShazamIO search workaround: {e}")
+
 
 def serialize_response(obj: Any) -> Dict[str, Any]:
     """Convert ShazamIO response objects to dictionaries."""
