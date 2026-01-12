@@ -1,0 +1,11 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ShazamIO Integration",
+        "description": "Set up ShazamIO integration to use Shazam services in Home Assistant. This integration provides access to all ShazamIO functionality including track recognition, artist/track search, top charts, and more."
+      }
+    }
+  },
+  "title": "ShazamIO"
+}

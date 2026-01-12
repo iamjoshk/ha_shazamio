@@ -1,1 +1,546 @@
+# Service definitions for ShazamIO integration
+
+recognize:
+  name: Recognize Track
+  description: Recognize a track from audio file or data
+  fields:
+    audio_path:
+      name: Audio Path
+      description: Path to audio file
+      example: "/config/audio/song.mp3"
+      selector:
+        text:
+    audio_data:
+      name: Audio Data
+      description: Audio data as bytes (alternative to audio_path)
+      selector:
+        text:
+    language:
+      name: Language
+      description: Language code for results
+      default: "en-US"
+      example: "en-US"
+      selector:
+        text:
+    endpoint_country:
+      name: Endpoint Country
+      description: Country code for API endpoint
+      default: "GB"
+      example: "GB"
+      selector:
+        text:
+
+artist_about:
+  name: Artist About
+  description: Get information about an artist
+  fields:
+    artist_id:
+      name: Artist ID
+      description: Shazam artist ID
+      required: true
+      example: 43328183
+      selector:
+        number:
+          mode: box
+    views:
+      name: Views
+      description: List of artist views to include (e.g., top-songs, full-albums)
+      example: '["top-songs", "full-albums"]'
+      selector:
+        object:
+    extend:
+      name: Extend
+      description: List of extended information to include (e.g., artistBio, origin)
+      example: '["artistBio", "origin"]'
+      selector:
+        object:
+    language:
+      name: Language
+      description: Language code for results
+      default: "en-US"
+      selector:
+        text:
+    endpoint_country:
+      name: Endpoint Country
+      description: Country code for API endpoint
+      default: "GB"
+      selector:
+        text:
+
+track_about:
+  name: Track About
+  description: Get information about a track
+  fields:
+    track_id:
+      name: Track ID
+      description: Shazam track ID
+      required: true
+      example: 552406075
+      selector:
+        number:
+          mode: box
+    language:
+      name: Language
+      description: Language code for results
+      default: "en-US"
+      selector:
+        text:
+    endpoint_country:
+      name: Endpoint Country
+      description: Country code for API endpoint
+      default: "GB"
+      selector:
+        text:
+
+search_artist:
+  name: Search Artist
+  description: Search for artists by name
+  fields:
+    query:
+      name: Query
+      description: Artist name or search prefix
+      required: true
+      example: "Drake"
+      selector:
+        text:
+    limit:
+      name: Limit
+      description: Maximum number of results
+      default: 10
+      selector:
+        number:
+          min: 1
+          max: 100
+          mode: box
+    offset:
+      name: Offset
+      description: Number of results to skip
+      default: 0
+      selector:
+        number:
+          min: 0
+          mode: box
+    language:
+      name: Language
+      description: Language code for results
+      default: "en-US"
+      selector:
+        text:
+    endpoint_country:
+      name: Endpoint Country
+      description: Country code for API endpoint
+      default: "GB"
+      selector:
+        text:
+
+search_track:
+  name: Search Track
+  description: Search for tracks by title
+  fields:
+    query:
+      name: Query
+      description: Track title or search prefix
+      required: true
+      example: "Shape of You"
+      selector:
+        text:
+    limit:
+      name: Limit
+      description: Maximum number of results
+      default: 10
+      selector:
+        number:
+          min: 1
+          max: 100
+          mode: box
+    offset:
+      name: Offset
+      description: Number of results to skip
+      default: 0
+      selector:
+        number:
+          min: 0
+          mode: box
+    language:
+      name: Language
+      description: Language code for results
+      default: "en-US"
+      selector:
+        text:
+    endpoint_country:
+      name: Endpoint Country
+      description: Country code for API endpoint
+      default: "GB"
+      selector:
+        text:
+
+related_tracks:
+  name: Related Tracks
+  description: Get tracks similar to a given track
+  fields:
+    track_id:
+      name: Track ID
+      description: Shazam track ID
+      required: true
+      example: 552406075
+      selector:
+        number:
+          mode: box
+    limit:
+      name: Limit
+      description: Maximum number of results
+      default: 20
+      selector:
+        number:
+          min: 1
+          max: 100
+          mode: box
+    offset:
+      name: Offset
+      description: Number of results to skip
+      default: 0
+      selector:
+        number:
+          min: 0
+          mode: box
+    language:
+      name: Language
+      description: Language code for results
+      default: "en-US"
+      selector:
+        text:
+    endpoint_country:
+      name: Endpoint Country
+      description: Country code for API endpoint
+      default: "GB"
+      selector:
+        text:
+
+top_world_tracks:
+  name: Top World Tracks
+  description: Get top tracks worldwide
+  fields:
+    limit:
+      name: Limit
+      description: Maximum number of results
+      default: 200
+      selector:
+        number:
+          min: 1
+          max: 200
+          mode: box
+    offset:
+      name: Offset
+      description: Number of results to skip
+      default: 0
+      selector:
+        number:
+          min: 0
+          mode: box
+    language:
+      name: Language
+      description: Language code for results
+      default: "en-US"
+      selector:
+        text:
+    endpoint_country:
+      name: Endpoint Country
+      description: Country code for API endpoint
+      default: "GB"
+      selector:
+        text:
+
+top_country_tracks:
+  name: Top Country Tracks
+  description: Get top tracks in a specific country
+  fields:
+    country_code:
+      name: Country Code
+      description: ISO 3166-2 country code
+      required: true
+      example: "US"
+      selector:
+        text:
+    limit:
+      name: Limit
+      description: Maximum number of results
+      default: 200
+      selector:
+        number:
+          min: 1
+          max: 200
+          mode: box
+    offset:
+      name: Offset
+      description: Number of results to skip
+      default: 0
+      selector:
+        number:
+          min: 0
+          mode: box
+    language:
+      name: Language
+      description: Language code for results
+      default: "en-US"
+      selector:
+        text:
+    endpoint_country:
+      name: Endpoint Country
+      description: Country code for API endpoint
+      default: "GB"
+      selector:
+        text:
+
+top_city_tracks:
+  name: Top City Tracks
+  description: Get top tracks in a specific city
+  fields:
+    country_code:
+      name: Country Code
+      description: ISO 3166-2 country code
+      required: true
+      example: "US"
+      selector:
+        text:
+    city_name:
+      name: City Name
+      description: Name of the city
+      required: true
+      example: "New York"
+      selector:
+        text:
+    limit:
+      name: Limit
+      description: Maximum number of results
+      default: 200
+      selector:
+        number:
+          min: 1
+          max: 200
+          mode: box
+    offset:
+      name: Offset
+      description: Number of results to skip
+      default: 0
+      selector:
+        number:
+          min: 0
+          mode: box
+    language:
+      name: Language
+      description: Language code for results
+      default: "en-US"
+      selector:
+        text:
+    endpoint_country:
+      name: Endpoint Country
+      description: Country code for API endpoint
+      default: "GB"
+      selector:
+        text:
+
+top_world_genre_tracks:
+  name: Top World Genre Tracks
+  description: Get top tracks worldwide for a specific genre
+  fields:
+    genre:
+      name: Genre
+      description: Genre (POP=1, HIP_HOP_RAP=2, DANCE=3, ELECTRONIC=4, RNB_SOUL=5, ALTERNATIVE=6, ROCK=7, LATIN=8, FILM_TV_STAGE=9, COUNTRY=10, AFRO_BEATS=11, WORLDWIDE=12, REGGAE_DANCE_HALL=13, HOUSE=14, K_POP=15, FRENCH_POP=16, SINGER_SONGWRITER=17, REGIONAL_MEXICANO=18)
+      required: true
+      example: "1"
+      selector:
+        text:
+    limit:
+      name: Limit
+      description: Maximum number of results
+      default: 100
+      selector:
+        number:
+          min: 1
+          max: 200
+          mode: box
+    offset:
+      name: Offset
+      description: Number of results to skip
+      default: 0
+      selector:
+        number:
+          min: 0
+          mode: box
+    language:
+      name: Language
+      description: Language code for results
+      default: "en-US"
+      selector:
+        text:
+    endpoint_country:
+      name: Endpoint Country
+      description: Country code for API endpoint
+      default: "GB"
+      selector:
+        text:
+
+top_country_genre_tracks:
+  name: Top Country Genre Tracks
+  description: Get top tracks in a country for a specific genre
+  fields:
+    country_code:
+      name: Country Code
+      description: ISO 3166-2 country code
+      required: true
+      example: "US"
+      selector:
+        text:
+    genre:
+      name: Genre
+      description: Genre (POP=1, HIP_HOP_RAP=2, DANCE=3, ELECTRONIC=4, RNB_SOUL=5, ALTERNATIVE=6, ROCK=7, LATIN=8, FILM_TV_STAGE=9, COUNTRY=10, AFRO_BEATS=11, WORLDWIDE=12, REGGAE_DANCE_HALL=13, HOUSE=14, K_POP=15, FRENCH_POP=16, SINGER_SONGWRITER=17, REGIONAL_MEXICANO=18)
+      required: true
+      example: "1"
+      selector:
+        text:
+    limit:
+      name: Limit
+      description: Maximum number of results
+      default: 200
+      selector:
+        number:
+          min: 1
+          max: 200
+          mode: box
+    offset:
+      name: Offset
+      description: Number of results to skip
+      default: 0
+      selector:
+        number:
+          min: 0
+          mode: box
+    language:
+      name: Language
+      description: Language code for results
+      default: "en-US"
+      selector:
+        text:
+    endpoint_country:
+      name: Endpoint Country
+      description: Country code for API endpoint
+      default: "GB"
+      selector:
+        text:
+
+artist_albums:
+  name: Artist Albums
+  description: Get all albums by an artist
+  fields:
+    artist_id:
+      name: Artist ID
+      description: Shazam artist ID
+      required: true
+      example: 43328183
+      selector:
+        number:
+          mode: box
+    limit:
+      name: Limit
+      description: Maximum number of results
+      default: 10
+      selector:
+        number:
+          min: 1
+          max: 100
+          mode: box
+    offset:
+      name: Offset
+      description: Number of results to skip
+      default: 0
+      selector:
+        number:
+          min: 0
+          mode: box
+    language:
+      name: Language
+      description: Language code for results
+      default: "en-US"
+      selector:
+        text:
+    endpoint_country:
+      name: Endpoint Country
+      description: Country code for API endpoint
+      default: "GB"
+      selector:
+        text:
+
+search_album:
+  name: Search Album
+  description: Get information about an album
+  fields:
+    album_id:
+      name: Album ID
+      description: Shazam album ID
+      required: true
+      example: 203347991
+      selector:
+        number:
+          mode: box
+    language:
+      name: Language
+      description: Language code for results
+      default: "en-US"
+      selector:
+        text:
+    endpoint_country:
+      name: Endpoint Country
+      description: Country code for API endpoint
+      default: "GB"
+      selector:
+        text:
+
+listening_counter:
+  name: Listening Counter
+  description: Get listening count for a track
+  fields:
+    track_id:
+      name: Track ID
+      description: Shazam track ID
+      required: true
+      example: 552406075
+      selector:
+        number:
+          mode: box
+    language:
+      name: Language
+      description: Language code for results
+      default: "en-US"
+      selector:
+        text:
+    endpoint_country:
+      name: Endpoint Country
+      description: Country code for API endpoint
+      default: "GB"
+      selector:
+        text:
+
+listening_counter_many:
+  name: Listening Counter Many
+  description: Get listening counts for multiple tracks
+  fields:
+    track_ids:
+      name: Track IDs
+      description: Comma-separated list of Shazam track IDs
+      required: true
+      example: "552406075,549952578"
+      selector:
+        text:
+    language:
+      name: Language
+      description: Language code for results
+      default: "en-US"
+      selector:
+        text:
+    endpoint_country:
+      name: Endpoint Country
+      description: Country code for API endpoint
+      default: "GB"
+      selector:
+        text:
 

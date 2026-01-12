@@ -1,1 +1,6 @@
+{
+  "name": "ShazamIO Integration",
+  "render_readme": true,
+  "domains": ["ha_shazamio"]
+}
 
