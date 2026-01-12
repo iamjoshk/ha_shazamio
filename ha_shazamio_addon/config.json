@@ -21,6 +21,5 @@
   },
   "schema": {
     "log_level": "list(debug|info|warning|error)?"
-  },
-  "image": "ghcr.io/{arch}-addon-ha-shazamio"
+  }
 }
