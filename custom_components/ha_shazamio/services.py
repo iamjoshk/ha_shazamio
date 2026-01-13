@@ -71,8 +71,11 @@ async def async_setup_services(hass: HomeAssistant) -> None:
             if audio_path:
                 # Read the file and send as base64 (add-on can't access HA filesystem)
                 try:
-                    with open(audio_path, "rb") as f:
-                        audio_bytes = f.read()
+                    def read_audio_file():
+                        with open(audio_path, "rb") as f:
+                            return f.read()
+                    
+                    audio_bytes = await hass.async_add_executor_job(read_audio_file)
                     payload["audio_data"] = base64.b64encode(audio_bytes).decode()
                 except FileNotFoundError:
                     _LOGGER.error(f"Audio file not found: {audio_path}")
