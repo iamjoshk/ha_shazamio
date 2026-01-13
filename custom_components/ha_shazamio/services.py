@@ -5,8 +5,8 @@ from typing import Any, Dict
 import base64
 
 import aiohttp
+from homeassistant.core import HomeAssistant, ServiceCall, ServiceResponse, SupportsResponse
 
-from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import template
 
 from .const import (
@@ -55,7 +55,7 @@ async def _call_addon_api(endpoint: str, data: Dict[str, Any]) -> Dict[str, Any]
 async def async_setup_services(hass: HomeAssistant) -> None:
     """Set up services for ShazamIO integration."""
 
-    async def handle_recognize(call: ServiceCall) -> None:
+    async def handle_recognize(call: ServiceCall) -> ServiceResponse:
         """Handle recognize service call."""
         try:
             audio_data = _render_template(hass, call.data.get("audio_data"))
@@ -78,19 +78,24 @@ async def async_setup_services(hass: HomeAssistant) -> None:
                     payload["audio_data"] = audio_data
             else:
                 _LOGGER.error("Either audio_data or audio_path must be provided")
-                return
+                return {}
             
             result = await _call_addon_api("recognize", payload)
             
+            # Fire event for backwards compatibility
             hass.bus.async_fire(
                 EVENT_SHAZAMIO_RESPONSE,
                 {"service": SERVICE_RECOGNIZE, "data": result}
             )
             
+            # Return data for response_variable
+            return result
+            
         except Exception as err:
             _LOGGER.error("Error in recognize service: %s", err)
+            return {}
 
-    async def handle_artist_about(call: ServiceCall) -> None:
+    async def handle_artist_about(call: ServiceCall) -> ServiceResponse:
         """Handle artist_about service call."""
         try:
             payload = {
@@ -108,10 +113,13 @@ async def async_setup_services(hass: HomeAssistant) -> None:
                 {"service": SERVICE_ARTIST_ABOUT, "data": result}
             )
             
+            return result
+            
         except Exception as err:
             _LOGGER.error("Error in artist_about service: %s", err)
+            return {}
 
-    async def handle_track_about(call: ServiceCall) -> None:
+    async def handle_track_about(call: ServiceCall) -> ServiceResponse:
         """Handle track_about service call."""
         try:
             payload = {
@@ -127,10 +135,13 @@ async def async_setup_services(hass: HomeAssistant) -> None:
                 {"service": SERVICE_TRACK_ABOUT, "data": result}
             )
             
+            return result
+            
         except Exception as err:
             _LOGGER.error("Error in track_about service: %s", err)
+            return {}
 
-    async def handle_search_artist(call: ServiceCall) -> None:
+    async def handle_search_artist(call: ServiceCall) -> ServiceResponse:
         """Handle search_artist service call."""
         try:
             payload = {
@@ -148,10 +159,13 @@ async def async_setup_services(hass: HomeAssistant) -> None:
                 {"service": SERVICE_SEARCH_ARTIST, "data": result}
             )
             
+            return result
+            
         except Exception as err:
             _LOGGER.error("Error in search_artist service: %s", err)
+            return {}
 
-    async def handle_search_track(call: ServiceCall) -> None:
+    async def handle_search_track(call: ServiceCall) -> ServiceResponse:
         """Handle search_track service call."""
         try:
             payload = {
@@ -169,8 +183,11 @@ async def async_setup_services(hass: HomeAssistant) -> None:
                 {"service": SERVICE_SEARCH_TRACK, "data": result}
             )
             
+            return result
+            
         except Exception as err:
             _LOGGER.error("Error in search_track service: %s", err)
+            return {}
 
     async def handle_related_tracks(call: ServiceCall) -> None:
         """Handle related_tracks service call."""
@@ -380,22 +397,52 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         except Exception as err:
             _LOGGER.error("Error in listening_counter_many service: %s", err)
 
-    # Register all services
-    hass.services.async_register(DOMAIN, SERVICE_RECOGNIZE, handle_recognize)
-    hass.services.async_register(DOMAIN, SERVICE_ARTIST_ABOUT, handle_artist_about)
-    hass.services.async_register(DOMAIN, SERVICE_TRACK_ABOUT, handle_track_about)
-    hass.services.async_register(DOMAIN, SERVICE_SEARCH_ARTIST, handle_search_artist)
-    hass.services.async_register(DOMAIN, SERVICE_SEARCH_TRACK, handle_search_track)
-    hass.services.async_register(DOMAIN, SERVICE_RELATED_TRACKS, handle_related_tracks)
-    hass.services.async_register(DOMAIN, SERVICE_TOP_WORLD_TRACKS, handle_top_world_tracks)
-    hass.services.async_register(DOMAIN, SERVICE_TOP_COUNTRY_TRACKS, handle_top_country_tracks)
-    hass.services.async_register(DOMAIN, SERVICE_TOP_CITY_TRACKS, handle_top_city_tracks)
-    hass.services.async_register(DOMAIN, SERVICE_TOP_WORLD_GENRE_TRACKS, handle_top_world_genre_tracks)
-    hass.services.async_register(DOMAIN, SERVICE_TOP_COUNTRY_GENRE_TRACKS, handle_top_country_genre_tracks)
-    hass.services.async_register(DOMAIN, SERVICE_ARTIST_ALBUMS, handle_artist_albums)
-    hass.services.async_register(DOMAIN, SERVICE_SEARCH_ALBUM, handle_search_album)
-    hass.services.async_register(DOMAIN, SERVICE_LISTENING_COUNTER, handle_listening_counter)
-    hass.services.async_register(DOMAIN, SERVICE_LISTENING_COUNTER_MANY, handle_listening_counter_many)
+    # Register all services with response support
+    hass.services.async_register(
+        DOMAIN, SERVICE_RECOGNIZE, handle_recognize, supports_response=SupportsResponse.OPTIONAL
+    )
+    hass.services.async_register(
+        DOMAIN, SERVICE_ARTIST_ABOUT, handle_artist_about, supports_response=SupportsResponse.OPTIONAL
+    )
+    hass.services.async_register(
+        DOMAIN, SERVICE_TRACK_ABOUT, handle_track_about, supports_response=SupportsResponse.OPTIONAL
+    )
+    hass.services.async_register(
+        DOMAIN, SERVICE_SEARCH_ARTIST, handle_search_artist, supports_response=SupportsResponse.OPTIONAL
+    )
+    hass.services.async_register(
+        DOMAIN, SERVICE_SEARCH_TRACK, handle_search_track, supports_response=SupportsResponse.OPTIONAL
+    )
+    hass.services.async_register(
+        DOMAIN, SERVICE_RELATED_TRACKS, handle_related_tracks, supports_response=SupportsResponse.OPTIONAL
+    )
+    hass.services.async_register(
+        DOMAIN, SERVICE_TOP_WORLD_TRACKS, handle_top_world_tracks, supports_response=SupportsResponse.OPTIONAL
+    )
+    hass.services.async_register(
+        DOMAIN, SERVICE_TOP_COUNTRY_TRACKS, handle_top_country_tracks, supports_response=SupportsResponse.OPTIONAL
+    )
+    hass.services.async_register(
+        DOMAIN, SERVICE_TOP_CITY_TRACKS, handle_top_city_tracks, supports_response=SupportsResponse.OPTIONAL
+    )
+    hass.services.async_register(
+        DOMAIN, SERVICE_TOP_WORLD_GENRE_TRACKS, handle_top_world_genre_tracks, supports_response=SupportsResponse.OPTIONAL
+    )
+    hass.services.async_register(
+        DOMAIN, SERVICE_TOP_COUNTRY_GENRE_TRACKS, handle_top_country_genre_tracks, supports_response=SupportsResponse.OPTIONAL
+    )
+    hass.services.async_register(
+        DOMAIN, SERVICE_ARTIST_ALBUMS, handle_artist_albums, supports_response=SupportsResponse.OPTIONAL
+    )
+    hass.services.async_register(
+        DOMAIN, SERVICE_SEARCH_ALBUM, handle_search_album, supports_response=SupportsResponse.OPTIONAL
+    )
+    hass.services.async_register(
+        DOMAIN, SERVICE_LISTENING_COUNTER, handle_listening_counter, supports_response=SupportsResponse.OPTIONAL
+    )
+    hass.services.async_register(
+        DOMAIN, SERVICE_LISTENING_COUNTER_MANY, handle_listening_counter_many, supports_response=SupportsResponse.OPTIONAL
+    )
 
 
 def _render_template(hass: HomeAssistant, value: Any) -> Any:
