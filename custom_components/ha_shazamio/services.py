@@ -199,7 +199,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
             _LOGGER.error("Error in search_track service: %s", err)
             return {}
 
-    async def handle_related_tracks(call: ServiceCall) -> None:
+    async def handle_related_tracks(call: ServiceCall) -> ServiceResponse:
         """Handle related_tracks service call."""
         try:
             payload = {
@@ -217,10 +217,13 @@ async def async_setup_services(hass: HomeAssistant) -> None:
                 {"service": SERVICE_RELATED_TRACKS, "data": result}
             )
             
+            return result
+            
         except Exception as err:
             _LOGGER.error("Error in related_tracks service: %s", err)
+            return {}
 
-    async def handle_top_world_tracks(call: ServiceCall) -> None:
+    async def handle_top_world_tracks(call: ServiceCall) -> ServiceResponse:
         """Handle top_world_tracks service call."""
         try:
             payload = {
@@ -237,10 +240,13 @@ async def async_setup_services(hass: HomeAssistant) -> None:
                 {"service": SERVICE_TOP_WORLD_TRACKS, "data": result}
             )
             
+            return result
+            
         except Exception as err:
             _LOGGER.error("Error in top_world_tracks service: %s", err)
+            return {}
 
-    async def handle_top_country_tracks(call: ServiceCall) -> None:
+    async def handle_top_country_tracks(call: ServiceCall) -> ServiceResponse:
         """Handle top_country_tracks service call."""
         try:
             payload = {
@@ -258,10 +264,13 @@ async def async_setup_services(hass: HomeAssistant) -> None:
                 {"service": SERVICE_TOP_COUNTRY_TRACKS, "data": result}
             )
             
+            return result
+            
         except Exception as err:
             _LOGGER.error("Error in top_country_tracks service: %s", err)
+            return {}
 
-    async def handle_top_city_tracks(call: ServiceCall) -> None:
+    async def handle_top_city_tracks(call: ServiceCall) -> ServiceResponse:
         """Handle top_city_tracks service call."""
         try:
             payload = {
@@ -280,10 +289,13 @@ async def async_setup_services(hass: HomeAssistant) -> None:
                 {"service": SERVICE_TOP_CITY_TRACKS, "data": result}
             )
             
+            return result
+            
         except Exception as err:
             _LOGGER.error("Error in top_city_tracks service: %s", err)
+            return {}
 
-    async def handle_top_world_genre_tracks(call: ServiceCall) -> None:
+    async def handle_top_world_genre_tracks(call: ServiceCall) -> ServiceResponse:
         """Handle top_world_genre_tracks service call."""
         try:
             payload = {
@@ -301,10 +313,13 @@ async def async_setup_services(hass: HomeAssistant) -> None:
                 {"service": SERVICE_TOP_WORLD_GENRE_TRACKS, "data": result}
             )
             
+            return result
+            
         except Exception as err:
             _LOGGER.error("Error in top_world_genre_tracks service: %s", err)
+            return {}
 
-    async def handle_top_country_genre_tracks(call: ServiceCall) -> None:
+    async def handle_top_country_genre_tracks(call: ServiceCall) -> ServiceResponse:
         """Handle top_country_genre_tracks service call."""
         try:
             payload = {
@@ -323,10 +338,13 @@ async def async_setup_services(hass: HomeAssistant) -> None:
                 {"service": SERVICE_TOP_COUNTRY_GENRE_TRACKS, "data": result}
             )
             
+            return result
+            
         except Exception as err:
             _LOGGER.error("Error in top_country_genre_tracks service: %s", err)
+            return {}
 
-    async def handle_artist_albums(call: ServiceCall) -> None:
+    async def handle_artist_albums(call: ServiceCall) -> ServiceResponse:
         """Handle artist_albums service call."""
         try:
             payload = {
@@ -344,10 +362,13 @@ async def async_setup_services(hass: HomeAssistant) -> None:
                 {"service": SERVICE_ARTIST_ALBUMS, "data": result}
             )
             
+            return result
+            
         except Exception as err:
             _LOGGER.error("Error in artist_albums service: %s", err)
+            return {}
 
-    async def handle_search_album(call: ServiceCall) -> None:
+    async def handle_search_album(call: ServiceCall) -> ServiceResponse:
         """Handle search_album service call."""
         try:
             payload = {
@@ -363,10 +384,13 @@ async def async_setup_services(hass: HomeAssistant) -> None:
                 {"service": SERVICE_SEARCH_ALBUM, "data": result}
             )
             
+            return result
+            
         except Exception as err:
             _LOGGER.error("Error in search_album service: %s", err)
+            return {}
 
-    async def handle_listening_counter(call: ServiceCall) -> None:
+    async def handle_listening_counter(call: ServiceCall) -> ServiceResponse:
         """Handle listening_counter service call."""
         try:
             payload = {
@@ -382,10 +406,13 @@ async def async_setup_services(hass: HomeAssistant) -> None:
                 {"service": SERVICE_LISTENING_COUNTER, "data": result}
             )
             
+            return result
+            
         except Exception as err:
             _LOGGER.error("Error in listening_counter service: %s", err)
+            return {}
 
-    async def handle_listening_counter_many(call: ServiceCall) -> None:
+    async def handle_listening_counter_many(call: ServiceCall) -> ServiceResponse:
         """Handle listening_counter_many service call."""
         try:
             track_ids_str = _render_template(hass, call.data.get("track_ids"))
@@ -404,8 +431,11 @@ async def async_setup_services(hass: HomeAssistant) -> None:
                 {"service": SERVICE_LISTENING_COUNTER_MANY, "data": result}
             )
             
+            return result
+            
         except Exception as err:
             _LOGGER.error("Error in listening_counter_many service: %s", err)
+            return {}
 
     # Register all services with response support
     hass.services.async_register(
