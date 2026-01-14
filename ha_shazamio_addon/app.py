@@ -27,9 +27,13 @@ try:
     # Use Apple Music API endpoint instead of broken search endpoint
     ShazamUrl.SEARCH_MUSIC = "https://www.shazam.com/services/amapi/v1/catalog/{endpoint_country}/search?types=songs&term={query}&limit={limit}&offset={offset}"
     ShazamUrl.SEARCH_ARTIST = "https://www.shazam.com/services/amapi/v1/catalog/{endpoint_country}/search?types=artists&term={query}&limit={limit}&offset={offset}"
-    logger.info("Applied ShazamIO search endpoint workaround")
+    # Fix artist info endpoint
+    ShazamUrl.SEARCH_ARTIST_V2 = "https://www.shazam.com/services/amapi/v1/catalog/{endpoint_country}/artists/{artist_id}"
+    # Fix album info endpoint
+    ShazamUrl.ARTIST_ALBUM_INFO = "https://www.shazam.com/services/amapi/v1/catalog/{endpoint_country}/albums/{album_id}"
+    logger.info("Applied ShazamIO endpoint workarounds for issue #145")
 except Exception as e:
-    logger.warning(f"Could not apply ShazamIO search workaround: {e}")
+    logger.warning(f"Could not apply ShazamIO workarounds: {e}")
 
 
 def serialize_response(obj: Any) -> Dict[str, Any]:
