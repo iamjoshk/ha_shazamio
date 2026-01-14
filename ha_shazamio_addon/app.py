@@ -24,6 +24,10 @@ factory = Factory()
 # Fix broken search endpoints by patching the URL
 try:
     from shazamio.misc import ShazamUrl
+    
+    # Log original URLs for debugging
+    logger.info(f"Original ARTIST_ALBUM_INFO: {getattr(ShazamUrl, 'ARTIST_ALBUM_INFO', 'NOT FOUND')}")
+    
     # Use Apple Music API endpoint instead of broken search endpoint
     ShazamUrl.SEARCH_MUSIC = "https://www.shazam.com/services/amapi/v1/catalog/{endpoint_country}/search?types=songs&term={query}&limit={limit}&offset={offset}"
     ShazamUrl.SEARCH_ARTIST = "https://www.shazam.com/services/amapi/v1/catalog/{endpoint_country}/search?types=artists&term={query}&limit={limit}&offset={offset}"
@@ -35,9 +39,11 @@ try:
     ShazamUrl.ARTIST_ALBUMS = "https://www.shazam.com/services/amapi/v1/catalog/{endpoint_country}/artists/{artist_id}/albums?limit={limit}&offset={offset}"
     # Fix listening counter endpoint - this one might need the old endpoint or different approach
     # ShazamUrl.LISTENING_COUNTER is used by listening_counter method
+    
+    logger.info(f"Patched ARTIST_ALBUM_INFO: {ShazamUrl.ARTIST_ALBUM_INFO}")
     logger.info("Applied ShazamIO endpoint workarounds for issue #145")
 except Exception as e:
-    logger.warning(f"Could not apply ShazamIO workarounds: {e}")
+    logger.warning(f"Could not apply ShazamIO workarounds: {e}", exc_info=True)
 
 
 def serialize_response(obj: Any) -> Dict[str, Any]:
@@ -368,11 +374,14 @@ async def search_album(request: AlbumRequest) -> Dict[str, Any]:
     """Get album information."""
     try:
         shazam = Shazam(language=request.language, endpoint_country=request.endpoint_country)
+        logger.info(f"Calling search_album with album_id={request.album_id}, endpoint_country={request.endpoint_country}")
         result = await shazam.search_album(album_id=request.album_id)
+        logger.info(f"search_album returned successfully for album_id={request.album_id}")
         return serialize_response(result)
     except Exception as e:
-        logger.error(f"Error in search_album (album_id={request.album_id}): {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Error in search_album (album_id={request.album_id}, endpoint_country={request.endpoint_country}): {type(e).__name__}: {e}", exc_info=True)
+        # Return a more detailed error response
+        raise HTTPException(status_code=500, detail=f"{type(e).__name__}: {str(e)}")
 
 
 @app.post("/api/listening_counter")
