@@ -209,6 +209,10 @@ async def artist_about(request: ArtistAboutRequest) -> Dict[str, Any]:
         result = await shazam.artist_about(request.artist_id, query=query)
         return serialize_response(result)
     except Exception as e:
+        error_msg = str(e)
+        if "405" in error_msg or "Failed to decode json" in error_msg:
+            logger.error(f"artist_about endpoint is broken due to Shazam API changes (issue #145). artist_id={request.artist_id}")
+            raise HTTPException(status_code=503, detail="This endpoint is currently unavailable due to Shazam API changes. See https://github.com/shazamio/ShazamIO/issues/145")
         logger.error(f"Error in artist_about (artist_id={request.artist_id}): {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -365,6 +369,10 @@ async def artist_albums(request: AlbumsRequest) -> Dict[str, Any]:
         )
         return serialize_response(result)
     except Exception as e:
+        error_msg = str(e)
+        if "405" in error_msg or "Failed to decode json" in error_msg:
+            logger.error(f"artist_albums endpoint is broken due to Shazam API changes (issue #145). artist_id={request.artist_id}")
+            raise HTTPException(status_code=503, detail="This endpoint is currently unavailable due to Shazam API changes. See https://github.com/shazamio/ShazamIO/issues/145")
         logger.error(f"Error in artist_albums (artist_id={request.artist_id}): {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -379,8 +387,11 @@ async def search_album(request: AlbumRequest) -> Dict[str, Any]:
         logger.info(f"search_album returned successfully for album_id={request.album_id}")
         return serialize_response(result)
     except Exception as e:
+        error_msg = str(e)
+        if "405" in error_msg or "Failed to decode json" in error_msg:
+            logger.error(f"search_album endpoint is broken due to Shazam API changes (issue #145). album_id={request.album_id}")
+            raise HTTPException(status_code=503, detail="This endpoint is currently unavailable due to Shazam API changes. See https://github.com/shazamio/ShazamIO/issues/145")
         logger.error(f"Error in search_album (album_id={request.album_id}, endpoint_country={request.endpoint_country}): {type(e).__name__}: {e}", exc_info=True)
-        # Return a more detailed error response
         raise HTTPException(status_code=500, detail=f"{type(e).__name__}: {str(e)}")
 
 
@@ -392,6 +403,10 @@ async def listening_counter(request: ListeningCounterRequest) -> Dict[str, Any]:
         result = await shazam.listening_counter(track_id=request.track_id)
         return serialize_response(result)
     except Exception as e:
+        error_msg = str(e)
+        if "405" in error_msg or "Failed to decode json" in error_msg:
+            logger.error(f"listening_counter endpoint is broken due to Shazam API changes (issue #145). track_id={request.track_id}")
+            raise HTTPException(status_code=503, detail="This endpoint is currently unavailable due to Shazam API changes. See https://github.com/shazamio/ShazamIO/issues/145")
         logger.error(f"Error in listening_counter (track_id={request.track_id}): {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
