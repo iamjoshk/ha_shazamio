@@ -3,7 +3,8 @@
 A comprehensive Home Assistant custom integration that provides a complete wrapper for [ShazamIO](https://github.com/shazamio/ShazamIO), enabling all ShazamIO functionality through Home Assistant service actions.
 
 > ## THIS IS VERY ALPHA RIGHT NOW
-
+> Some actions don't work yet.
+ 
 ## Features
 
 - **Complete ShazamIO API Coverage**: All ShazamIO methods are available as Home Assistant services
