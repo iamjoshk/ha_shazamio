@@ -31,6 +31,10 @@ try:
     ShazamUrl.SEARCH_ARTIST_V2 = "https://www.shazam.com/services/amapi/v1/catalog/{endpoint_country}/artists/{artist_id}"
     # Fix album info endpoint
     ShazamUrl.ARTIST_ALBUM_INFO = "https://www.shazam.com/services/amapi/v1/catalog/{endpoint_country}/albums/{album_id}"
+    # Fix artist albums endpoint
+    ShazamUrl.ARTIST_ALBUMS = "https://www.shazam.com/services/amapi/v1/catalog/{endpoint_country}/artists/{artist_id}/albums?limit={limit}&offset={offset}"
+    # Fix listening counter endpoint - this one might need the old endpoint or different approach
+    # ShazamUrl.LISTENING_COUNTER is used by listening_counter method
     logger.info("Applied ShazamIO endpoint workarounds for issue #145")
 except Exception as e:
     logger.warning(f"Could not apply ShazamIO workarounds: {e}")
@@ -199,7 +203,7 @@ async def artist_about(request: ArtistAboutRequest) -> Dict[str, Any]:
         result = await shazam.artist_about(request.artist_id, query=query)
         return serialize_response(result)
     except Exception as e:
-        logger.error(f"Error in artist_about: {e}")
+        logger.error(f"Error in artist_about (artist_id={request.artist_id}): {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -355,7 +359,7 @@ async def artist_albums(request: AlbumsRequest) -> Dict[str, Any]:
         )
         return serialize_response(result)
     except Exception as e:
-        logger.error(f"Error in artist_albums: {e}")
+        logger.error(f"Error in artist_albums (artist_id={request.artist_id}): {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -367,7 +371,7 @@ async def search_album(request: AlbumRequest) -> Dict[str, Any]:
         result = await shazam.search_album(album_id=request.album_id)
         return serialize_response(result)
     except Exception as e:
-        logger.error(f"Error in search_album: {e}")
+        logger.error(f"Error in search_album (album_id={request.album_id}): {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -379,7 +383,7 @@ async def listening_counter(request: ListeningCounterRequest) -> Dict[str, Any]:
         result = await shazam.listening_counter(track_id=request.track_id)
         return serialize_response(result)
     except Exception as e:
-        logger.error(f"Error in listening_counter: {e}")
+        logger.error(f"Error in listening_counter (track_id={request.track_id}): {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 
